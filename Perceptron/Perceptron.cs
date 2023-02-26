@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace Perceptron
 {
+   
+       
     internal class Perceptron
     {
         double[] weights;
@@ -20,14 +22,21 @@ namespace Perceptron
             weights = initialWeightValues;
             bias = initialBiasValue;
             this.mutationAmount = mutationAmount;
-            this.random = random;   
+            this.random = random;
+            this.errorFunc = errorFunc;
+            
+
         }
 
+
+
         public Perceptron(int amountOfInputs, double mutationAmount, Random random, Func<double, double, double> errorFunc)
+            : this(new double[amountOfInputs], random.NextDouble(), mutationAmount, random, errorFunc)
         {
-            weights = new double[amountOfInputs];
-            this.mutationAmount = mutationAmount;
-            this.random = random;
+            for (int i = 0; i < amountOfInputs; i++)
+            {
+                weights[i] = random.NextDouble();
+            }
             /*Initializes the weights array given the amount of inputs*/
         }
 
@@ -71,15 +80,18 @@ namespace Perceptron
             double[] results = Compute(inputs);
             for (int i = 0; i < inputs.Length; i++)
             {
-                sum += Math.Pow((desiredOutputs[i] - results[i]), 2);
+                sum += errorFunc.Invoke(desiredOutputs[i], results[i]);
             }
             return sum / inputs.Length;
             /*computes the output using the inputs returns the average error between each output row and each desired output row using errorFunc*/
         }
-    
-        public double TrainWithHillClimbing(double[][] inputs, double[] desiredOutputs, double currentError)
+
+        public double TrainWithHillClimbing(double[][] inputs, double[] desiredOutputs)
         {
-            currentError = GetError(inputs, desiredOutputs);
+            double currentError = GetError(inputs, desiredOutputs);
+            double[] tempWeights = new double[weights.Length];
+            weights.CopyTo(tempWeights, 0);
+            double tempBias = bias;
             MutateSomething(weights);
             double newError = GetError(inputs, desiredOutputs);
             if (newError < currentError)
@@ -87,18 +99,29 @@ namespace Perceptron
                 currentError = newError;
                 //right here you need to continue from step 4 on the wiki
             }
-
+            else
+            {
+                weights = tempWeights;
+                bias = tempBias;
+            }
+            return currentError;
             /*attempts one hill climbing training iteration and returns the new current error*/
         }
         public double[] MutateSomething(double[] weights)
         {
-            int r = random.Next(0, 2);
+            int index = random.Next(0, weights.Length + 1);
+            //randomze from 0 to weights.length + 1 and if it is weights.length
+            //5 10  20 
+            double mutation = random.NextDouble() * (mutationAmount*2) - mutationAmount;
 
-            if (r == 0) weights[random.Next(0, weights.Length + 1)] += random.Next(1, 3);
-            else weights[random.Next(0, weights.Length + 1)] -= random.Next(1, 3);
+            if (index == weights.Length) bias += mutation;
+
+            else weights[index] += mutation;
 
             return weights;
         }
+
+        
 
     }
 }
