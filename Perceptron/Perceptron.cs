@@ -16,6 +16,7 @@ namespace Perceptron
         double mutationAmount;
         Random random;
         Func<double, double, double> errorFunc;
+        double slope;
 
         public Perceptron(double[] initialWeightValues, double initialBiasValue, double mutationAmount, Random random, Func<double, double, double> errorFunc)
         {
@@ -68,7 +69,10 @@ namespace Perceptron
             double[] sums = new double[inputs.Length];
             for (int i = 0; i < inputs.Length; i++)
             {
-                sums[i] = Compute(inputs[i]);
+                double temp = Compute(inputs[i]);
+                if (temp < .50) sums[i] = 0;
+
+                else sums[i] = 1;
             }
             return sums;
             /*computes the output for each row of inputs*/
@@ -85,14 +89,25 @@ namespace Perceptron
             return sum / inputs.Length;
             /*computes the output using the inputs returns the average error between each output row and each desired output row using errorFunc*/
         }
-
-        public double TrainWithHillClimbing(double[][] inputs, double[] desiredOutputs)
+        public double GetError(double[] x, double[] y)
+        {
+            double sum = 0;
+            double[] results = Compute(x);
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                sum += errorFunc.Invoke(desiredOutputs[i], results[i]);
+            }
+            return sum / inputs.Length;
+            /*computes the output using the inputs returns the average error between each output row and each desired output row using errorFunc*/
+        }
+        
+        public double TrainWithHillClimbingGate(double[][] inputs, double[] desiredOutputs)
         {
             double currentError = GetError(inputs, desiredOutputs);
             double[] tempWeights = new double[weights.Length];
             weights.CopyTo(tempWeights, 0);
             double tempBias = bias;
-            MutateSomething(weights);
+            MutateGate(weights);
             double newError = GetError(inputs, desiredOutputs);
             if (newError < currentError)
             {
@@ -107,7 +122,30 @@ namespace Perceptron
             return currentError;
             /*attempts one hill climbing training iteration and returns the new current error*/
         }
-        public double[] MutateSomething(double[] weights)
+
+        public double TrainWithHillClimbingLine(double[] x, double[] y)
+        {
+            double currentError = GetError(x, y);
+            double[] tempWeights = new double[weights.Length];
+            weights.CopyTo(tempWeights, 0);
+            double tempBias = bias;
+            MutateGate(weights);
+            double newError = GetError(inputs, desiredOutputs);
+            if (newError < currentError)
+            {
+                currentError = newError;
+                //right here you need to continue from step 4 on the wiki
+            }
+            else
+            {
+                weights = tempWeights;
+                bias = tempBias;
+            }
+            return currentError;
+            /*attempts one hill climbing training iteration and returns the new current error*/
+        }
+
+        public double[] MutateGate(double[] weights)
         {
             int index = random.Next(0, weights.Length + 1);
             //randomze from 0 to weights.length + 1 and if it is weights.length
@@ -120,8 +158,8 @@ namespace Perceptron
 
             return weights;
         }
-
         
+
 
     }
 }
