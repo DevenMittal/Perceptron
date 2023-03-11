@@ -37,7 +37,11 @@
                 new double[] {1, 0},
             };
             double[] values = perceptron.Compute(inputs);
-
+            //Okay so basically, I'm pretty sure the problem is that the error function
+            //is not right for an and function. Just multiplying each number by a weight
+            //will never allow the computer to distinguish between 1 and 0s, so it is just
+            //choosing the mid point which in this case is just .25 and -.25 which would
+            //be the 1:3 ratio of desired outputs of 1 and 0.
             ;
 
         }
