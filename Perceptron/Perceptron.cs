@@ -15,10 +15,10 @@ namespace Perceptron
         double bias;
         double mutationAmount;
         Random random;
-        Func<double, double, double> errorFunc;
+        ErrorFunction errorFunc;
         double slope;
 
-        public Perceptron(double[] initialWeightValues, double initialBiasValue, double mutationAmount, Random random, Func<double, double, double> errorFunc)
+        public Perceptron(ActivationFunction activationFunction, double[] initialWeightValues, double initialBiasValue, double mutationAmount, Random random, ErrorFunction errorFunc)
         {
             weights = initialWeightValues;
             bias = initialBiasValue;
@@ -31,8 +31,8 @@ namespace Perceptron
 
 
 
-        public Perceptron(int amountOfInputs, double mutationAmount, Random random, Func<double, double, double> errorFunc)
-            : this(new double[amountOfInputs], random.NextDouble(), mutationAmount, random, errorFunc)
+        public Perceptron(ActivationFunction activationFunction, int amountOfInputs, double mutationAmount, Random random, ErrorFunction errorFunc)
+            : this(activationFunction, new double[amountOfInputs], random.NextDouble(), mutationAmount, random, errorFunc)
         {
             for (int i = 0; i < amountOfInputs; i++)
             {
@@ -84,7 +84,7 @@ namespace Perceptron
             double[] results = Compute(inputs);
             for (int i = 0; i < inputs.Length; i++)
             {
-                sum += errorFunc.Invoke(desiredOutputs[i], results[i]);
+                sum += errorFunc.Function(desiredOutputs[i], results[i]);
             }
             return sum / inputs.Length;
             /*computes the output using the inputs returns the average error between each output row and each desired output row using errorFunc*/

@@ -1,14 +1,23 @@
 ﻿namespace Perceptron
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
             double[] weights = { .5, .5 };
             Random rand = new Random();
-            Func<double, double, double> errorFunc  = (x, y) =>  Math.Pow(x - y, 2);
 
-            Perceptron perceptron = new Perceptron(weights, .5, .05, rand, errorFunc);
+
+
+            Func<double, double> function = (input) => 1/(1+Math.Pow(Math.E, -input));
+            Func<double, double> derivative = (input) => function(input)*(1-function(input));
+            Func<double, double, double> errorFunc  = (x, y) =>  Math.Pow(x - y, 2);
+            Func<double, double, double> errorFunctionDerivative = (input, desired) => 2 * input - 2 * desired;
+
+            ActivationFunction activationFunction = new ActivationFunction(function, derivative);
+            ErrorFunction errorFunction = new ErrorFunction(errorFunc, errorFunctionDerivative);
+
+            Perceptron perceptron = new Perceptron(activationFunction, weights, .5, .05, rand, errorFunction);
 
             double[][] trainInputs =
             {
@@ -39,40 +48,8 @@
                 new double[] {1, 1}
             };
             double[] values = perceptron.Compute(inputs);
-            
             ;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            //Okay so basically, I'm pretty sure the problem is that the error function
-            //is not right for an and function. Just multiplying each number by a weight
-            //will never allow the computer to distinguish between 1 and 0s, so it is just
-            //choosing the mid point which in this case is just .25 and -.25 which would
-            //be the 1:3 ratio of desired outputs of 1 and 0.
+            
         }
     }
 }
