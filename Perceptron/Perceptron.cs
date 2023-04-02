@@ -11,21 +11,24 @@ namespace Perceptron
        
     public class Perceptron
     {
+        public double LearningRate { get; set; }
         double[] weights;
         double bias;
         double mutationAmount;
         Random random;
         ErrorFunction errorFunc;
+        ActivationFunction activationFunction
         double slope;
 
-        public Perceptron(ActivationFunction activationFunction, double[] initialWeightValues, double initialBiasValue, double mutationAmount, Random random, ErrorFunction errorFunc)
+        public Perceptron(double LearningRate, ActivationFunction activationFunction, double[] initialWeightValues, double initialBiasValue, double mutationAmount, Random random, ErrorFunction errorFunc)
         {
             weights = initialWeightValues;
             bias = initialBiasValue;
             this.mutationAmount = mutationAmount;
             this.random = random;
             this.errorFunc = errorFunc;
-            
+            this.LearningRate = LearningRate;
+            this.activationFunction = activationFunction;
 
         }
 
@@ -89,8 +92,69 @@ namespace Perceptron
             return sum / inputs.Length;
             /*computes the output using the inputs returns the average error between each output row and each desired output row using errorFunc*/
         }
-        
-        
+
+
+        public double TrainWithGradientDescent(double[] inputs, double desiredOutput)
+        {
+            double activationInput=  Compute(inputs);
+            double output = activationFunction.Function(activationInput);
+            double currentError = errorFunc.Function(desiredOutput, output);
+
+            mutationAmount = -LearningRate*errorFunc.Derivative(desiredOutput, output) * activationFunction.Derivative(activationInput);
+
+            for (int i = 0; i < weights.Count(); i++)
+            {
+                weights[i] += mutationAmount * inputs[i];
+            }
+            bias += mutationAmount;
+
+
+            return currentError;
+        }
+
+        public double TrainGradientBatch(double[][] inputs, double[] desiredOutput)
+        {
+            double[] activationInputs = new double[inputs.Length];
+            double[] outputs = new double[inputs.Length];
+
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                double activationInput = Compute(inputs[i]);
+                activationInputs[i] = activationInput;
+                outputs[i] = activationFunction.Function(activationInput);
+
+            }
+
+            double output = activationFunction.Function(activationInput);
+            double currentError = errorFunc.Function(desiredOutput, output);
+
+            mutationAmount = -LearningRate * errorFunc.Derivative(desiredOutput, output) * activationFunction.Derivative(activationInput);
+
+            for (int i = 0; i < weights.Count(); i++)
+            {
+                weights[i] += mutationAmount * inputs[i];
+            }
+            bias += mutationAmount;
+
+
+            return currentError;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public double TrainWithHillClimbingGate(double[][] inputs, double[] desiredOutputs)
         {
             double currentError = GetError(inputs, desiredOutputs);

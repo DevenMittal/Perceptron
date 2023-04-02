@@ -6,7 +6,7 @@
         {
             double[] weights = { .5, .5 };
             Random rand = new Random();
-
+            double LearningRate = .05;
 
 
             Func<double, double> function = (input) => 1/(1+Math.Pow(Math.E, -input));
@@ -17,7 +17,7 @@
             ActivationFunction activationFunction = new ActivationFunction(function, derivative);
             ErrorFunction errorFunction = new ErrorFunction(errorFunc, errorFunctionDerivative);
 
-            Perceptron perceptron = new Perceptron(activationFunction, weights, .5, .05, rand, errorFunction);
+            Perceptron perceptron = new Perceptron(LearningRate, activationFunction, weights, .5, .05, rand, errorFunction);
 
             double[][] trainInputs =
             {
