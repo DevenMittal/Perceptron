@@ -17,7 +17,7 @@ namespace Perceptron
         double mutationAmount;
         Random random;
         ErrorFunction errorFunc;
-        ActivationFunction activationFunction
+        ActivationFunction activationFunction;
         double slope;
 
         public Perceptron(double LearningRate, ActivationFunction activationFunction, double[] initialWeightValues, double initialBiasValue, double mutationAmount, Random random, ErrorFunction errorFunc)
@@ -35,7 +35,7 @@ namespace Perceptron
 
 
         public Perceptron(ActivationFunction activationFunction, int amountOfInputs, double mutationAmount, Random random, ErrorFunction errorFunc)
-            : this(activationFunction, new double[amountOfInputs], random.NextDouble(), mutationAmount, random, errorFunc)
+            : this(.05, activationFunction, new double[amountOfInputs], random.NextDouble(), mutationAmount, random, errorFunc)
         {
             for (int i = 0; i < amountOfInputs; i++)
             {
@@ -96,7 +96,7 @@ namespace Perceptron
 
         public double TrainWithGradientDescent(double[] inputs, double desiredOutput)
         {
-            double activationInput=  Compute(inputs);
+            double activationInput =  Compute(inputs);
             double output = activationFunction.Function(activationInput);
             double currentError = errorFunc.Function(desiredOutput, output);
 
@@ -122,20 +122,18 @@ namespace Perceptron
                 double activationInput = Compute(inputs[i]);
                 activationInputs[i] = activationInput;
                 outputs[i] = activationFunction.Function(activationInput);
-
             }
+            double currentError = GetError(inputs, desiredOutput);
 
-            double output = activationFunction.Function(activationInput);
-            double currentError = errorFunc.Function(desiredOutput, output);
-
-            mutationAmount = -LearningRate * errorFunc.Derivative(desiredOutput, output) * activationFunction.Derivative(activationInput);
-
-            for (int i = 0; i < weights.Count(); i++)
+            for (int i = 0; i < desiredOutput.Length; i++)
             {
-                weights[i] += mutationAmount * inputs[i];
+                double mutationAmount2 = -LearningRate * errorFunc.Derivative(outputs[i], desiredOutput[i]) * activationFunction.Derivative(activationInputs[i]);
+                for (int j = 0; j < weights.Count(); j++)
+                {
+                    weights[j] += mutationAmount2 * inputs[i][j];
+                }
+                bias += mutationAmount2;
             }
-            bias += mutationAmount;
-
 
             return currentError;
         }
