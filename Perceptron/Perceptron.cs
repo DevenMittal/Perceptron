@@ -56,6 +56,12 @@ namespace Perceptron
             /*Randomly generates values for every weight including the bias*/
         }
 
+        public double ComputeWithActivation(double[] inputs)
+        {
+            var answer = Compute(inputs);
+            return activationFunction.Function(answer);
+        }
+
         public double Compute(double[] inputs)
         {
             double sum = 0;
@@ -72,8 +78,9 @@ namespace Perceptron
             double[] sums = new double[inputs.Length];
             for (int i = 0; i < inputs.Length; i++)
             {
-                double temp = Compute(inputs[i]);
-                if (temp < .50) sums[i] = 0;
+                sums[i] = ComputeWithActivation(inputs[i]);
+                //double temp = Compute(inputs[i]);
+                if (sums[i] < .50) sums[i] = 0;
 
                 else sums[i] = 1;
             }

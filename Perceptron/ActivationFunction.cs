@@ -38,7 +38,7 @@
             }
             public double Derivative(double output, double desiredOutput)
             {
-                return function(output, desiredOutput);
+                return derivative(output, desiredOutput);
     
             }
         }

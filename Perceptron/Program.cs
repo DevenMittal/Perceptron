@@ -29,7 +29,7 @@
             {
                 new double[] {1, 0},
                 new double[] {0, 0},
-                new double[] {1, 0},
+                new double[] {0, 1},
                 new double[] {1, 1},
 
             };
@@ -40,7 +40,7 @@
                 1,
                 0,
             };
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 perceptron.TrainGradientBatch(trainInputs, outputs);
             }
