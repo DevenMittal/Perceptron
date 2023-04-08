@@ -87,7 +87,7 @@ namespace Perceptron
             double[] results = Compute(inputs);
             for (int i = 0; i < inputs.Length; i++)
             {
-                sum += errorFunc.Function(desiredOutputs[i], results[i]);
+                sum += errorFunc.Function(results[i], desiredOutputs[i]);
             }
             return sum / inputs.Length;
             /*computes the output using the inputs returns the average error between each output row and each desired output row using errorFunc*/
@@ -117,7 +117,7 @@ namespace Perceptron
             double[] activationInputs = new double[inputs.Length];
             double[] outputs = new double[inputs.Length];
 
-            for (int i = 0; i < inputs.Length; i++)
+            for (int i = 0; i < outputs.Length; i++)
             {
                 double activationInput = Compute(inputs[i]);
                 activationInputs[i] = activationInput;
@@ -128,7 +128,7 @@ namespace Perceptron
             for (int i = 0; i < desiredOutput.Length; i++)
             {
                 double mutationAmount2 = -LearningRate * errorFunc.Derivative(outputs[i], desiredOutput[i]) * activationFunction.Derivative(activationInputs[i]);
-                for (int j = 0; j < weights.Count(); j++)
+                for (int j = 0; j < weights.Length; j++)
                 {
                     weights[j] += mutationAmount2 * inputs[i][j];
                 }
@@ -137,18 +137,6 @@ namespace Perceptron
 
             return currentError;
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
