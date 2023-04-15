@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            double[] weights = { 0.25, 0.25 };
+            double[] weights = { 0.5, 0.5 };
             Random rand = new Random();
             double LearningRate = .001;
 
@@ -27,8 +27,8 @@
 
             double[][] trainInputs =
             {
-                new double[] {1, 0},
                 new double[] {0, 0},
+                new double[] {1, 0},
                 new double[] {0, 1},
                 new double[] {1, 1},
 
@@ -36,11 +36,11 @@
             double[] outputs =
             {
                 0,
-                0,
-                0,
                 1,
+                1,
+                0,
             };
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 1000000; i++)
             {
                 perceptron.TrainGradientBatch(trainInputs, outputs);
             }

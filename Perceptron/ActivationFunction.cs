@@ -12,12 +12,12 @@
 
             public double Function(double input)
             {
-                return function(input);
+                return function.Invoke(input);
             }
 
             public double Derivative(double input)
             {
-                return derivative(input);
+                return derivative.Invoke(input);
             }
         }
         
@@ -34,11 +34,11 @@
 
             public double Function(double output, double desiredOutput)
             { 
-                 return function(output, desiredOutput);  
+                 return function.Invoke(output, desiredOutput);  
             }
             public double Derivative(double output, double desiredOutput)
             {
-                return derivative(output, desiredOutput);
+                return derivative.Invoke(output, desiredOutput);
     
             }
         }

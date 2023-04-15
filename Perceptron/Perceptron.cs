@@ -65,7 +65,7 @@ namespace Perceptron
         public double Compute(double[] inputs)
         {
             double sum = 0;
-            for (int i = 0; i < inputs.Length; i++)
+            for (int i = 0; i < weights.Length; i++)
             {
                 sum += inputs[i] * weights[i];
             }
@@ -80,9 +80,7 @@ namespace Perceptron
             {
                 sums[i] = ComputeWithActivation(inputs[i]);
                 //double temp = Compute(inputs[i]);
-                if (sums[i] < .50) sums[i] = 0;
-
-                else sums[i] = 1;
+               
             }
             return sums;
             /*computes the output for each row of inputs*/
